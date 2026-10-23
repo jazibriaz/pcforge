@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pcforge
+  labels:
+    app: pcforge
+spec:
+  type: ClusterIP
+  selector:
+    app: pcforge
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

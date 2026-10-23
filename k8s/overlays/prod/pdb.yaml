@@ -1,0 +1,10 @@
+# Keeps at least 2 pods up during node drains (e.g. EKS node group upgrades)
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pcforge
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: pcforge

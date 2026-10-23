@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: pcforge-dev
+resources:
+  - namespace.yaml
+  - ../../base
+patches:
+  - target: { kind: Deployment, name: pcforge }
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: dev
+# CI rewrites newTag on every merge; Argo CD syncs the change.
+images:
+  - name: pcforge
+    newName: 833167447551.dkr.ecr.eu-west-1.amazonaws.com/pcforge
+    newTag: latest

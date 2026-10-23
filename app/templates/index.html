@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PCForge · Build planner</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='6' width='20' height='20' rx='3' fill='%23f5a524'/><rect x='11' y='11' width='10' height='10' rx='1' fill='%23111316'/></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="logo" href="/"><span class="chip" aria-hidden="true"></span>PCForge</a>
+      <nav class="presets" aria-label="Preset builds">
+        <span class="presets-label">Start from</span>
+        <div id="presets" class="preset-list"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Plan a build that <em>actually fits.</em></h1>
+      <p>Pick parts and PCForge checks sockets, memory type, case clearances, cooler mounting and PSU headroom as you go.</p>
+    </section>
+
+    <div class="layout">
+      <section class="parts" aria-label="Parts">
+        <ol id="part-rows" class="part-rows"></ol>
+      </section>
+
+      <aside class="summary" aria-live="polite">
+        <div class="summary-card">
+          <div class="status-row">
+            <span id="status" class="status status-incomplete">Incomplete</span>
+            <span id="count" class="count">0 / 8 parts</span>
+          </div>
+
+          <div class="price">
+            <span class="label">Estimated total</span>
+            <span id="total" class="amount">€0</span>
+            <span class="note">Sample prices, EUR</span>
+          </div>
+
+          <div class="power">
+            <div class="power-head">
+              <span class="label">Power</span>
+              <span id="power-text" class="power-text">— W est.</span>
+            </div>
+            <div class="meter" role="img" id="meter" aria-label="Power draw versus PSU capacity">
+              <div id="meter-fill" class="meter-fill"></div>
+              <div id="meter-rec" class="meter-rec" title="Recommended PSU"></div>
+            </div>
+            <div class="power-foot">
+              <span id="psu-text">No PSU selected</span>
+              <span id="rec-text"></span>
+            </div>
+          </div>
+
+          <div class="issues">
+            <span class="label">Compatibility</span>
+            <ul id="issues" class="issue-list"><li class="issue-empty">Select parts to start checking.</li></ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="deploy">
+    <div class="wrap deploy-inner">
+      <span class="deploy-item"><span class="k">version</span><span class="v" id="ver">{{ version }}</span></span>
+      <span class="deploy-item"><span class="k">env</span><span class="v env-{{ env }}">{{ env }}</span></span>
+      <span class="deploy-item"><span class="k">pod</span><span class="v" id="pod">{{ pod }}</span></span>
+      <span class="deploy-links"><a href="/healthz">healthz</a><a href="/readyz">readyz</a><a href="/metrics">metrics</a></span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

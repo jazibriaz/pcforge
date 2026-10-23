@@ -1,0 +1,22 @@
+# Handled by the AWS Load Balancer Controller: this one resource creates a real ALB.
+# Only prod gets an Ingress (one ALB = real money); reach dev with kubectl port-forward.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pcforge
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip          # route straight to pod IPs (VPC CNI)
+    alb.ingress.kubernetes.io/healthcheck-path: /readyz
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pcforge
+                port:
+                  name: http

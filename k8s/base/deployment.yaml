@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcforge
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: pcforge
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0   # never drop below desired capacity during a rollout
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: pcforge
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: pcforge
+          image: pcforge            # rewritten per overlay by kustomize `images:`
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: APP_ENV
+              value: base
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name   # Downward API: shows which pod served the page
+          readinessProbe:
+            httpGet: { path: /readyz, port: http }
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests: { cpu: 50m, memory: 96Mi }
+            limits: { memory: 192Mi }        # no CPU limit on purpose: avoids CFS throttling
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp                # gunicorn needs a writable tmp dir
+      volumes:
+        - name: tmp
+          emptyDir: {}
