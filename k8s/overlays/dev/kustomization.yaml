@@ -17,4 +17,4 @@ patches:
 images:
   - name: pcforge
     newName: 833167447551.dkr.ecr.eu-west-1.amazonaws.com/pcforge
-    newTag: "41505d6"
+    newTag: "74779ac"
