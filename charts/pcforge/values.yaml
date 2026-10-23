@@ -1,0 +1,26 @@
+# Defaults for every environment. values-<env>.yaml files override only what differs.
+replicaCount: 2
+
+image:
+  repository: 833167447551.dkr.ecr.eu-west-1.amazonaws.com/pcforge
+  tag: ""               # must be set per environment (the chart refuses to render without it)
+  pullPolicy: IfNotPresent
+
+env: base               # shown in the app footer and /version
+
+service:
+  port: 80
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 96Mi
+  limits:
+    memory: 192Mi       # no CPU limit on purpose: avoids CFS throttling
+
+ingress:
+  enabled: false        # turned on in prod: creates an ALB via the AWS Load Balancer Controller
+
+pdb:
+  enabled: false        # turned on in prod: keeps pods up during node drains
+  minAvailable: 2

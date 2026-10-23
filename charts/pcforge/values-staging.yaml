@@ -1,0 +1,5 @@
+# Staging: 2 pods, no load balancer. Promote a version by committing a tested tag here.
+replicaCount: 2
+env: staging
+image:
+  tag: "41505d6"
