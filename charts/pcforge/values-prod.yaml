@@ -11,6 +11,8 @@ resources:
     memory: 256Mi
 ingress:
   enabled: true
+  host: forgemyrig.com
+  certificateArn: arn:aws:acm:eu-west-1:833167447551:certificate/a8397d6a-ec10-419b-bb24-d7149174c01f
 pdb:
   enabled: true
   minAvailable: 2

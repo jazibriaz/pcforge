@@ -20,6 +20,8 @@ resources:
 
 ingress:
   enabled: false        # turned on in prod: creates an ALB via the AWS Load Balancer Controller
+  host: ""
+  certificateArn: ""
 
 pdb:
   enabled: false        # turned on in prod: keeps pods up during node drains
