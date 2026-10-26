@@ -26,3 +26,12 @@ ingress:
 pdb:
   enabled: false        # turned on in prod: keeps pods up during node drains
   minAvailable: 2
+
+serviceMonitor:
+  enabled: false        # needs the Prometheus Operator CRDs (kube-prometheus-stack)
+
+alerts:
+  enabled: false
+  errorRateThreshold: 0.05   # 5% of requests returning 5xx
+  p95LatencySeconds: 0.5
+  minHealthyPods: 2          # same floor as the prod PodDisruptionBudget

@@ -74,12 +74,15 @@ def test_check_endpoint_validates_input():
     assert ok.status_code == 200 and ok.get_json()["status"] == "ok"
 
 
-def test_metrics_exposed():
+def test_metrics_recorded_but_not_on_app_port():
+    from prometheus_client import generate_latest
     c = client()
     c.post("/api/check", json={"parts": {}})
-    body = c.get("/metrics").get_data(as_text=True)
+    body = generate_latest().decode()
     assert "pcforge_build_checks_total" in body
     assert "pcforge_http_requests_total" in body
+    # /metrics must NOT be served by the app (it lives on METRICS_PORT instead)
+    assert c.get("/metrics").status_code == 404
 
 
 def test_index_shows_deploy_info():

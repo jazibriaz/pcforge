@@ -20,7 +20,9 @@ USER 10001
 ARG APP_VERSION=dev
 ENV APP_VERSION=${APP_VERSION}
 
-EXPOSE 8080
+# 8080 = app (behind the Ingress), 9100 = Prometheus metrics (cluster-internal only)
+ENV METRICS_PORT=9100
+EXPOSE 8080 9100
 
 # One worker + threads: prometheus_client counters live in process memory,
 # so multiple workers would each report partial numbers. Scale with replicas instead.

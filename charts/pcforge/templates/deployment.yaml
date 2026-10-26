@@ -31,7 +31,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 8080      # app, the only port the Ingress routes to
+            - name: metrics
+              containerPort: 9100      # Prometheus metrics, scraped from inside the cluster
           env:
             - name: APP_ENV
               value: {{ .Values.env | quote }}

@@ -2,8 +2,8 @@ import os
 import socket
 import time
 
-from flask import Flask, Response, g, jsonify, render_template, request
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
+from flask import Flask, g, jsonify, render_template, request
+from prometheus_client import Counter, Gauge, Histogram, start_http_server
 
 from .catalog import CATALOG, CATEGORY_ORDER, PRESETS
 from .compat import evaluate
@@ -30,9 +30,8 @@ def create_app():
     @app.after_request
     def _record(response):
         endpoint = request.url_rule.rule if request.url_rule else "unmatched"
-        if endpoint != "/metrics":
-            LATENCY.labels(endpoint).observe(time.perf_counter() - g.start)
-            REQUESTS.labels(request.method, endpoint, response.status_code).inc()
+        LATENCY.labels(endpoint).observe(time.perf_counter() - g.start)
+        REQUESTS.labels(request.method, endpoint, response.status_code).inc()
         return response
 
     @app.get("/")
@@ -69,11 +68,21 @@ def create_app():
         ready = all(CATALOG.get(c) for c in CATEGORY_ORDER)
         return jsonify({"status": "ready" if ready else "not-ready"}), (200 if ready else 503)
 
-    @app.get("/metrics")
-    def metrics():
-        return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
-
     return app
 
 
+_metrics_server_started = False
+
+
+def start_metrics_server():
+    """Serve Prometheus metrics on their own port (METRICS_PORT), never on the app port.
+    The Ingress only routes to the app port, so /metrics is not reachable from the internet."""
+    global _metrics_server_started
+    port = os.getenv("METRICS_PORT")
+    if port and not _metrics_server_started:
+        start_http_server(int(port))
+        _metrics_server_started = True
+
+
 app = create_app()
+start_metrics_server()

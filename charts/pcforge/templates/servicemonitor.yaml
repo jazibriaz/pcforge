@@ -1,0 +1,17 @@
+{{- if .Values.serviceMonitor.enabled }}
+# Tells Prometheus (via the Prometheus Operator) to scrape the "metrics" port of this Service.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: pcforge
+  labels:
+    {{- include "pcforge.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "pcforge.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: metrics          # the Service port name, NOT the public http port
+      path: /metrics
+      interval: 30s
+{{- end }}
