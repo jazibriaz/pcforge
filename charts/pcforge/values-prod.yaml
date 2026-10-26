@@ -1,5 +1,5 @@
 # Prod: 3 pods, public ALB, disruption budget, bigger resources.
-replicaCount: 6
+replicaCount: 2
 env: prod
 image:
   tag: "692e408"
