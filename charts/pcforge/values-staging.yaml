@@ -2,4 +2,6 @@
 replicaCount: 3
 env: staging
 image:
-  tag: "41505d6"
+  tag: "692e408"
+serviceMonitor:
+  enabled: true

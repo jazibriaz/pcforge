@@ -2,7 +2,7 @@
 replicaCount: 3
 env: prod
 image:
-  tag: "41505d6"
+  tag: "692e408"
 resources:
   requests:
     cpu: 100m
@@ -16,3 +16,7 @@ ingress:
 pdb:
   enabled: true
   minAvailable: 2
+serviceMonitor:
+  enabled: true
+alerts:
+  enabled: true
